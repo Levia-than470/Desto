@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Explained</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #283048, #859398);
+            color: #f0f0f0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #ffcc00;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .payload {
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            color: #ffcc00;
+            font-family: monospace;
+        }
+        code {
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>SQL Injection Explained</h1>
+
+    <h2>1. Basic SQL Injection</h2>
+    <p>
+        Basic SQL injection occurs when user input is directly included in a SQL query without proper sanitization.
+        Attackers can manipulate the input to modify the SQL query and access unauthorized data.
+        This type of attack is often used to bypass login forms or retrieve sensitive information from the database.
+    </p>
+
+    <h3>Example Payload: <span class="payload">admin' OR 1=1 --</span></h3>
+    <p>
+        This payload uses the logical condition <code>OR 1=1</code>, which always evaluates to true.
+        It bypasses authentication checks, allowing the attacker to log in without a valid password.
+        The <code>--</code> comment symbol ignores the rest of the SQL query.
+    </p>
+
+    <h2>2. Union-Based SQL Injection</h2>
+    <p>
+        Union-based SQL injection uses the <code>UNION</code> operator to combine the results of two or more SQL queries.
+        Attackers can use this technique to extract data from different tables in the database.
+        It is often used when the application displays query results directly on the webpage.
+    </p>
+
+    <h3>Example Payload: <span class="payload">test' UNION SELECT null, sqlite_version(), null --</span></h3>
+    <p>
+        This payload uses the <code>UNION</code> operator to append a query that retrieves the database version.
+        The <code>null</code> values are used to match the number of columns in the original query.
+        This technique can reveal valuable information about the database, such as its version or structure.
+    </p>
+
+    <h2>3. Error-Based SQL Injection</h2>
+    <p>
+        Error-based SQL injection relies on triggering errors in the database to extract information.
+        The error messages returned by the database can disclose details about the database schema or its contents.
+        This technique is useful when the application returns detailed error messages in the response.
+    </p>
+
+    <h3>Example Payload: <span class="payload">info' UNION SELECT null, name, null FROM sqlite_master WHERE type='table' --</span></h3>
+    <p>
+        This payload attempts to extract table names from the <code>sqlite_master</code> system table.
+        If the application is vulnerable, the error message may include the names of tables in the database.
+        Attackers use this information to understand the database structure for further exploitation.
+    </p>
+
+    <h2>4. Extracting User Credentials</h2>
+    <p>
+        A common goal of SQL injection attacks is to extract user credentials from the database.
+        Attackers can use <code>UNION</code> queries or logical conditions to retrieve usernames and passwords.
+        This type of attack can lead to unauthorized access and data breaches.
+    </p>
+
+    <h3>Example Payload: <span class="payload">users' UNION SELECT id, username, email FROM users --</span></h3>
+    <p>
+        This payload retrieves all user credentials from the <code>users</code> table using a <code>UNION</code> query.
+        It appends a query that selects the <code>id</code>, <code>username</code>, and <code>email</code> columns from the users table.
+        If successful, it displays the list of users and their contact information.
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+        SQL injection is a powerful attack technique that can compromise the security of a web application.
+        It is crucial to use parameterized queries and input validation to prevent these vulnerabilities.
+        By understanding these types of SQL injection, developers can better protect their applications against potential attacks.
+    </p>
+
+</body>
+</html>
